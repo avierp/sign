@@ -117,6 +117,7 @@ class SignOcaTemplate(models.Model):
             "record_ref": f"{record._name},{record.id}",
             "signatory_data": self._get_signatory_data(),
             "data": self.data,
+            "filename": self.filename,
             "signer_ids": [
                 (
                     0,
