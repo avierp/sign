@@ -1,5 +1,6 @@
 .o_sign_oca_field {
     background-color: rgba(0, 128, 128, 0.3);
+    z-index: 1000;
     &.sign_oca_field_required {
         background-color: rgba(255, 113, 113, 0.5);
     }
@@ -38,6 +39,7 @@
     background-color: rgba(0, 128, 128, 0.3);
     top: 0;
     left: 0;
+    z-index: 1000;
     .o_sign_oca_button_header {
         padding: 0.3em;
     }
