@@ -31,6 +31,7 @@ class SignOcaTemplateGenerate(models.TransientModel):
             "template_id": self.template_id.id,
             "signatory_data": self.template_id._get_signatory_data(),
             "data": self.template_id.data,
+            "filename": self.template_id.filename,
             "ask_location": self.template_id.ask_location,
             "signer_ids": [
                 (
