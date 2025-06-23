@@ -14,4 +14,8 @@ class SignOcaField(models.Model):
         required=True,
         default="text",
     )
-    default_value = fields.Char()
+    default_value = fields.Char(
+        help="If filled with the technical name of a field of type char or text "
+        "linked to the template model when it is res.partner, the value will be "
+        "precompiled."
+    )

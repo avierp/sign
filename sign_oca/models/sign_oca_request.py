@@ -18,6 +18,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 from odoo.tools import float_repr
+from odoo.tools.misc import get_lang
 
 
 class SignOcaRequest(models.Model):
@@ -396,18 +397,37 @@ class SignOcaRequestSigner(models.Model):
     def get_info(self, access_token=False):
         self.ensure_one()
         self._set_action_log("view", access_token=access_token)
+        partner_fields_dict = {"id": self.partner_id.id}
+        for field_name, field_info in (
+            self.env["res.partner"]
+            .with_user(self.partner_id.user_id)
+            .fields_get()
+            .items()
+        ):
+            if field_info["type"] in ["char", "text"]:
+                partner_fields_dict.update({field_name: self.partner_id[field_name]})
+            if field_info["type"] == "many2one":
+                try:
+                    name_get = self.partner_id[field_name].name_get()
+                    if name_get and name_get[0]:
+                        partner_fields_dict.update({field_name: name_get[0][1]})
+                except KeyError:
+                    pass
+        lang_id = get_lang(self.env, self.env.user.lang)
+        partner_fields_dict.update(
+            {
+                "current_date": fields.Date.context_today(self).strftime(
+                    lang_id.date_format
+                )
+            }
+        )
         return {
             "role_id": self.role_id.id if not self.signed_on else False,
             "name": self.request_id.template_id.name,
             "items": self.request_id.signatory_data,
             "to_sign": self.request_id.to_sign,
             "ask_location": self.request_id.ask_location,
-            "partner": {
-                "id": self.partner_id.id,
-                "name": self.partner_id.name,
-                "email": self.partner_id.email,
-                "phone": self.partner_id.phone,
-            },
+            "partner": partner_fields_dict,
         }
 
     def sign(self):
