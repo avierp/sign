@@ -16,7 +16,7 @@ class SignOcaRequest(models.Model):
     )
 
     @api.depends("record_ref")
-    def _compute_maintenance_equipment_id(self):
+    def _compute_purchase_order_id(self):
         for item in self.filtered(
             lambda x: x.record_ref and x.record_ref._name == "purchase.order"
         ):
