@@ -279,6 +279,7 @@ class SignOcaRequest(models.Model):
                     ]
                 )
             )
+            attachments.update({"name": self.filename or _("Signed Document.pdf")})
             # The message will not be linked to the record because we do not want
             # it happen.
             self.env["mail.thread"].message_notify(
