@@ -6,15 +6,17 @@ import {renderToString} from "@web/core/utils/render";
 
 const signatureSignOca = {
     uploadSignature: function (parent, item, signatureItem, data) {
-        item.value = data.signatureImage[1];
+        if (typeof data.signatureImage === "string") {
+            item.value = data.signatureImage;
+        } else if (Array.isArray(data.signatureImage)) {
+            item.value = data.signatureImage[1];
+        } else {
+            throw new Error(
+                "Signature must be an image file or a list of images of this format: 'data:image/png;base64,'"
+            );
+        }
         parent.postIframeField(item);
         parent.checkFilledAll();
-        var next_items = Object.values(parent.info.items)
-            .filter((i) => i.tabindex > item.tabindex)
-            .sort((a, b) => a.tabindex - b.tabindex);
-        if (next_items.length > 0) {
-            parent.items[next_items[0].id].dispatchEvent(new Event("focus_signature"));
-        }
     },
     generate: function (parent, item, signatureItem) {
         var input = $(
